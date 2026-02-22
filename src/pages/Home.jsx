@@ -25,9 +25,11 @@ export default function Home() {
         fileName: name
       });
 
-      if (response.data && response.data.results) {
-        setResults(response.data.results);
-        setSummary(response.data.summary);
+      const payload = response?.data ?? response;
+
+      if (payload && payload.results) {
+        setResults(payload.results);
+        setSummary(payload.summary);
         setAnalysisComplete(true);
       } else {
         throw new Error('Respuesta inválida del servidor');
