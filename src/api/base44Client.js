@@ -17,6 +17,14 @@ export const base44 = {
       }
 
       return await response.json();
+    },
+
+    // AÑADE ESTE MÉTODO:
+    async invoke(functionName, params) {
+      if (functionName === 'analyzeVAT') {
+        return this.analyzeVAT(params.rows);
+      }
+      throw new Error(`Function ${functionName} not found`);
     }
   },
 
