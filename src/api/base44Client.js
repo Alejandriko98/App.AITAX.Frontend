@@ -1,14 +1,38 @@
-import { createClient } from '@base44/sdk';
-import { appParams } from '@/lib/app-params';
+const API_URL = import.meta.env.VITE_API_URL || 'https://app-aitax-backend.onrender.com';
 
-const { appId, token, functionsVersion, appBaseUrl } = appParams;
+export const base44 = {
+  functions: {
+    async analyzeVAT(rows) {
+      const response = await fetch(`${API_URL}/api/analyze`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rows }),
+      });
 
-//Create a client with authentication required
-export const base44 = createClient({
-  appId,
-  token,
-  functionsVersion,
-  serverUrl: '',
-  requiresAuth: false,
-  appBaseUrl
-});
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error del servidor: ${response.status} - ${errorText}`);
+      }
+
+      return await response.json();
+    }
+  },
+
+  async getOrders(shop) {
+    const response = await fetch(`${API_URL}/api/orders?shop=${shop}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error del servidor: ${response.status} - ${errorText}`);
+    }
+
+    return await response.json();
+  }
+};
